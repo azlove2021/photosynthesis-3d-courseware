@@ -1,0 +1,158 @@
+<canvas id="gl"></canvas>
+<div id="labels"></div>
+
+<header id="top" class="panel">
+  <div class="toprow">
+    <div class="brand">
+      <span class="mark">光</span>
+      <div><h1>光合作用</h1><p>光反应 · 暗反应 · 卡尔文循环</p></div>
+    </div>
+    <div class="mq"><span class="chip violet">主线问题</span><span>光反应和暗反应各自在做什么，它们靠什么连在一起？</span></div>
+    <span class="sp"></span>
+    <span class="status"><i></i>运行中</span>
+    <span class="score">得分 <b id="score">0</b></span>
+    <button class="btn" id="quizBtn">检测 <kbd>Q</kbd></button>
+    <button class="btn" id="helpBtn">玩法</button>
+    <button class="btn on" id="tgLeft">讲解 <kbd>H</kbd></button>
+    <button class="btn on" id="tgRight">中控 <kbd>J</kbd></button>
+    <button class="btn" id="tgCinema">影院 <kbd>F</kbd></button>
+    <button class="btn on" id="voiceBtn">语音 <kbd>V</kbd></button>
+  </div>
+  <div class="chain" id="chain">
+    <div class="item on"><span class="dot"></span><b>光能</b><small>太阳</small></div><span class="arrow">→</span>
+    <div class="item"><span class="dot"></span><b>色素</b><small>捕光</small></div><span class="arrow">→</span>
+    <div class="item"><span class="dot"></span><b>ATP·NADPH</b><small>活跃化学能</small></div><span class="arrow">→</span>
+    <div class="item"><span class="dot"></span><b>C₃</b><small>被还原</small></div><span class="arrow">→</span>
+    <div class="item"><span class="dot"></span><b>糖</b><small>有机物</small></div>
+  </div>
+</header>
+
+<nav class="steps panel" id="steps"></nav>
+
+<aside class="left panel">
+  <div class="phead"><span class="kicker">本步</span><span class="crumb">问句 → 动手 → 结论 + 要点 + 考点</span></div>
+  <div class="stepq"><span class="num" id="stepNo">1</span><h2 id="qTitle">加载中…</h2></div>
+  <p class="scene" id="scene"></p>
+  <div class="try"><span class="kicker">动手试一试</span><span class="chip" id="tryState" title="拖拽/缩放/点选 3D，或拖动中控台滑块、按突变按钮后，自动标记为已完成">还没动手</span></div>
+  <p class="instruction" id="instruction"></p>
+  <div class="expect"><b>应该看到：</b><span id="expect"></span></div>
+  <div class="conclusion" id="conclusion" hidden></div>
+  <div class="hintline" id="conclusionHint">点「揭示结论」查看本步结论</div>
+  <div class="mini"><b>本步要点</b><ul id="points"></ul></div>
+  <div class="mini warnbox"><b>易错点</b><span id="warnText"></span></div>
+  <div class="mini exam"><b>考点</b><span id="examText"></span></div>
+  <div class="actions">
+    <button class="btn pri" id="reveal">揭示结论</button>
+    <button class="btn" id="resetStep">复位本步</button>
+  </div>
+  <div class="units" id="units"></div>
+</aside>
+
+<aside class="right panel">
+  <div class="phead"><span class="kicker">中控台</span><span class="crumb">拖滑块、按突变，看四个池怎么变</span></div>
+
+  <div class="readouts two">
+    <div class="readout"><b id="roO2">0</b><span>O₂ 释放 相对速率</span></div>
+    <div class="readout"><b id="roFix">0</b><span>CO₂ 固定 相对速率</span></div>
+  </div>
+
+  <div class="sl">
+    <div class="top"><span>光照强度</span><b id="lightVal">1200 lux</b></div>
+    <input type="range" id="light" min="0" max="2000" step="50" value="1200">
+    <div class="scale"><span>0 黑暗</span><span>1000</span><span>2000</span></div>
+  </div>
+
+  <div class="sl">
+    <div class="top"><span>CO₂ 浓度</span><b id="co2Val">400 ppm</b></div>
+    <input type="range" id="co2" min="0" max="1000" step="25" value="400">
+    <div class="scale"><span>0 断供</span><span>500</span><span>1000</span></div>
+  </div>
+
+  <div class="muts">
+    <button class="btn danger" id="btnDark">突然黑暗</button>
+    <button class="btn danger" id="btnNoCO2">突然断 CO₂</button>
+    <button class="btn" id="btnResetSim">复位</button>
+  </div>
+  <div class="mutnote" id="mutNote" hidden></div>
+
+  <div class="poolhead"><b>四个蓄水池</b><span>实时液位</span></div>
+  <div class="pools">
+    <div class="pool"><span class="pk">C₃</span><i><b id="barC3" style="width:55%"></b></i><span class="pv" id="valC3">55</span></div>
+    <div class="pool"><span class="pk">C₅</span><i><b id="barC5" style="width:45%"></b></i><span class="pv" id="valC5">45</span></div>
+    <div class="pool"><span class="pk">NADPH</span><i><b id="barNADPH" style="width:55%"></b></i><span class="pv" id="valNADPH">55</span></div>
+    <div class="pool"><span class="pk">ATP</span><i><b id="barATP" style="width:55%"></b></i><span class="pv" id="valATP">55</span></div>
+  </div>
+
+  <div class="chartbox">
+    <div class="chart-head"><b>光合速率 — 步骤</b><span id="chartVal">40</span></div>
+    <canvas id="chart"></canvas>
+  </div>
+
+  <div class="structhead"><b>结构速查</b><span>点一下＝选中并聚焦</span></div>
+  <div class="structs" id="structs"></div>
+</aside>
+
+<div class="eqb" id="eq"><b>本步关系</b><span id="eqText">光能 → ATP + NADPH → 有机物</span></div>
+
+<!-- 视角条：任何模式下都可用 -->
+<div id="viewBar">
+  <button class="vb" id="vOut" title="缩小（滚轮）">−</button>
+  <button class="vb" id="vIn" title="放大（滚轮）">＋</button>
+  <span class="vsep"></span>
+  <button class="vb" id="vReset" title="回到本步预设视角（R）">⟲</button>
+  <button class="vb" id="vSpin" title="自动缓慢旋转">↻</button>
+  <span class="vsep"></span>
+  <span class="vlab">拖拽旋转 · 滚轮缩放 · 点结构看说明 · 双击聚焦</span>
+</div>
+
+<!-- 结构信息卡 -->
+<div id="pickCard">
+  <div class="pc-h"><span class="chip violet" id="pcTag">结构</span><b id="pcName">—</b>
+    <button class="pc-x" id="pcClose" title="关闭">×</button></div>
+  <p id="pcDesc"></p>
+  <div class="pc-k" id="pcTip"></div>
+</div>
+
+<!-- 影院模式胶囊 -->
+<div id="cineBar">
+  <button class="btn" id="cineExit">退出影院 <kbd>Esc</kbd></button>
+  <button class="btn" id="cinePrev">‹</button>
+  <span class="chip" id="cineStep">1 / 9</span>
+  <button class="btn" id="cineNext">›</button>
+  <button class="btn" id="cineVoice">语音</button>
+  <button class="btn" id="cineFull" title="浏览器全屏">⛶</button>
+</div>
+
+<div id="toast"></div>
+
+<footer class="foot panel">
+  <button class="btn" id="prev">‹ 上一步</button>
+  <span class="counter">第 <b id="cur">1</b> / <b id="total">9</b> 步</span>
+  <button class="btn pri" id="next">下一步 ›</button>
+  <button class="btn" id="autoBtn">自动讲课</button>
+  <span class="disclaimer">示意声明：叶绿体与类囊体大小、分子数量均为示意；反应速率已放慢；颜色仅用于区分物质。示意 · 非真实比例。</span>
+  <span class="keys">← → 翻步 · 1–9 跳步 · Q 检测 · H/J 面板 · F 影院 · R 视角</span>
+</footer>
+
+<div class="modal" id="quiz" hidden>
+  <div class="quizcard panel">
+    <div class="qhead"><b>考核</b><button class="btn" id="quizClose">×</button></div>
+    <div id="quizBody"></div>
+    <div class="qfoot"><span>得分 <b id="quizScore">0</b> / 3</span><button class="btn pri" id="quizSubmit">提交</button></div>
+  </div>
+</div>
+
+<div class="modal" id="help" hidden>
+  <div class="quizcard panel">
+    <div class="qhead"><b>玩法</b><button class="btn" id="helpClose">×</button></div>
+    <ol class="help-list">
+      <li>点「下一步」按顺序讲课；也可以点顶部步骤条或按 <kbd>1–9</kbd> 跳步。</li>
+      <li><b>3D 场景可以自由看</b>：按住左键拖拽旋转，滚轮缩放，右键或 <kbd>Shift</kbd>+拖拽平移；<kbd>R</kbd> 回到本步预设视角。</li>
+      <li><b>点任意结构看说明</b>：点类囊体、基粒、基质、Rubisco、色素、C₃、C₅、ATP/NADPH 等，会高亮并弹出功能卡；<b>双击</b>直接聚焦。</li>
+      <li><b>右栏是实验台</b>：拖动「光照强度」「CO₂ 浓度」，看四个蓄水池和粒子流实时变化。</li>
+      <li><b>突变按钮</b>：「突然黑暗」「突然断 CO₂」用来做考试必考的突变分析，按「复位」回到常态。</li>
+      <li>左栏「动手试一试」会在你真正操作后自动变「已完成」；<kbd>H</kbd> 收起左栏。</li>
+      <li>要全屏看实验：按 <kbd>F</kbd> 进入影院模式，<kbd>Esc</kbd> 退出。</li>
+    </ol>
+  </div>
+</div>

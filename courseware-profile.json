@@ -1,0 +1,15 @@
+{
+  "type": "experiment",
+  "layout": "cockpit",
+  "theme": "glass",
+  "voiceMode": "required",
+  "quantityChart": "required",
+  "interactionLevel": "advanced",
+  "interaction3d": "orbit+pick",
+  "panelHide": "three",
+  "offlineRequired": true,
+  "bundle": "inline",
+  "params": ["t", "voice"],
+  "publishMode": "auto",
+  "knowledgeBase": "E:/AAA_文档/001-高中生物知识库"
+}
